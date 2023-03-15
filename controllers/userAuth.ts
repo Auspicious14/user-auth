@@ -38,7 +38,7 @@ export const createUserAuth = async (req: Request, res: Response) => {
 export const loginUserAuth = async (req: Request, res: Response) => {
   const { email, password } = req.body;
   try {
-    const user: any = userAuthModel.find(email);
+    const user: any = userAuthModel.findOne(email);
     if (!user.email) return res.json({ status: "Not found" }).sendStatus(404);
     const comparePassword: boolean = await bcrypt.compare(
       password,
