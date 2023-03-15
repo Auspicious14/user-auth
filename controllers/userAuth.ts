@@ -1,9 +1,10 @@
-import { Request, Response } from "express";
-import bcrypt from "bcrypt";
 const jwt = require("jsonwebtoken");
 const dotenv = require("dotenv");
-dotenv.config();
+import { Request, Response } from "express";
+import bcrypt from "bcrypt";
 import userAuthModel from "../models/userAuth";
+import { handleErrors } from "../middlewares/userAuth";
+dotenv.config();
 const secret = process.env.TOKEN_SECRET;
 const expiresIn = 24 * 60 * 60;
 
@@ -29,5 +30,27 @@ export const createUserAuth = async (req: Request, res: Response) => {
     console.log(user);
   } catch (error) {
     console.log(error);
+    const err = handleErrors(error);
+    res.json({ err });
+  }
+};
+
+export const loginUserAuth = async (req: Request, res: Response) => {
+  const { email, password } = req.body;
+  try {
+    const user: any = userAuthModel.find(email);
+    if (!user.email) return res.json({ status: "Not found" }).sendStatus(404);
+    const comparePassword: boolean = await bcrypt.compare(
+      password,
+      user.password
+    );
+    if (!comparePassword)
+      return res.sendStatus(404).json({ password: "Not matched" });
+    const token = createToken(user?._id);
+    res.cookie("jwt", token, { httpOnly: true, maxAge: expiresIn * 1000 });
+    res.json({ user, token });
+  } catch (error) {
+    const errors = handleErrors(error);
+    res.json({ errors });
   }
 };
