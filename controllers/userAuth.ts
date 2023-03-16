@@ -20,7 +20,7 @@ export const createUserAuth = async (req: Request, res: Response) => {
     const user: any = await userAuthModel.create({
       firstName,
       lastName,
-      roles,
+      roles: roles || "member",
       email,
       password: hashedPassword,
     });
