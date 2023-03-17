@@ -4,7 +4,7 @@ import { handleErrors } from "../middlewares/userAuth";
 
 export const getUsers = async (req: Request, res: Response) => {
   const { email, password, roles } = req.body;
-  ``;
+
   try {
     const authUser: any = await userAuthModel.findOne(email);
     if (authUser.roles[0] === "admin") {
