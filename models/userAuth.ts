@@ -1,6 +1,12 @@
 const { isEmail } = require("validator");
+import dotenv from "dotenv";
 import mongoose from "mongoose";
 const Schema = mongoose.Schema;
+
+dotenv.config();
+const userRoleNumber = process.env.USER_ROLE_NUMBER;
+const adminRoleNumber = process.env.ADMIN_ROLE_NUMBER;
+const employeeRoleNumber = process.env.EMPLOYEE_ROLE_NUMBER;
 
 const userAuthSchema = new Schema(
   {
@@ -14,7 +20,16 @@ const userAuthSchema = new Schema(
       validate: isEmail,
     },
     password: { type: String, required: true, minLength: 6 },
-    roles: [{ type: String }],
+    roles: {
+      user: {
+        type: String,
+        default: userRoleNumber,
+      },
+      admin: {
+        type: String,
+      },
+      employee: { type: String },
+    },
   },
   { timestamps: true }
 );

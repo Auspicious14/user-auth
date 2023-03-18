@@ -6,7 +6,7 @@ import userAuthModel from "../models/userAuth";
 import { handleErrors } from "../middlewares/userAuth";
 dotenv.config();
 const secret = process.env.TOKEN_SECRET;
-const expiresIn = 24 * 60 * 60;
+const expiresIn = 60 * 60;
 
 const createToken = (id: string) => {
   return jwt.sign({ id }, secret, { expiresIn });

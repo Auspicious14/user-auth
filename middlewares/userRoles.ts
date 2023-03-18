@@ -1,14 +1,14 @@
 import { Request, Response, NextFunction } from "express";
-import { roles } from "./roles";
 
-export const verifyRoles = (action: any, resource: any) => {
+const verifyRoles = (authRoles?: number[]) => {
   (req: Request, res: Response, next: NextFunction) => {
     try {
-      const permission = roles.can(req.user.roles)[action](resource);
-      if (!permission)
-        return res
-          .sendStatus(401)
-          .json({ error: `You don't have permission to access the page` });
+      if (!req.roles)
+        return res.sendStatus(401).json({ error: "Unauthorised" });
+      const roles = req.roles
+        .map((role: number) => authRoles?.includes(role))
+        .find((rol: boolean) => rol === true);
+      if (!roles) return res.sendStatus(401);
       next();
     } catch (error) {
       next(error);
@@ -26,3 +26,5 @@ export const allowLogIn = (req: Request, res: Request, next: NextFunction) => {
     next(error);
   }
 };
+
+export default verifyRoles;
