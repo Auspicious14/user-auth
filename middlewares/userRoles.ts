@@ -1,7 +1,7 @@
 import { Request, Response, NextFunction } from "express";
 
 const verifyRoles = (authRoles?: number[]) => {
-  (req: Request, res: Response, next: NextFunction) => {
+  return (req: any, res: any, next: NextFunction) => {
     try {
       if (!req.roles)
         return res.sendStatus(401).json({ error: "Unauthorised" });
@@ -16,15 +16,15 @@ const verifyRoles = (authRoles?: number[]) => {
   };
 };
 
-export const allowLogIn = (req: Request, res: Request, next: NextFunction) => {
-  try {
-    const user = res.locals.loggedInUser;
-    if (!user) return res.sendStatus(401).json({ error: `we don't ` });
-    req.user = user;
-    next();
-  } catch (error) {
-    next(error);
-  }
-};
+// export const allowLogIn = (req: Request, res: Request, next: NextFunction) => {
+//   try {
+//     const user = res.locals.loggedInUser;
+//     if (!user) return res.sendStatus(401).json({ error: `we don't ` });
+//     req.user = user;
+//     next();
+//   } catch (error) {
+//     next(error);
+//   }
+// };
 
 export default verifyRoles;
